@@ -1,8 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-require("./app/routes/meme.routes")(app);
-
 const app = express();
+
 
 var corsOptions = {
   origin: 'http:localhost/3000'
@@ -16,9 +15,9 @@ const db = require("./app/models");
 
 console.log(db.sequelize);
 
-db.sequelize.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.");
-});
+// db.sequelize.sync({ force: true }).then(() => {
+//   console.log("Drop and re-sync db.");
+// });
 
 
 
@@ -26,7 +25,7 @@ app.get('/', (req, res) => {
 res.json({message: "Bienvenido al API de MemGen"});
 });
 
-
+require("./app/routes/meme.routes")(app);
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`El servidor está corriendo en el puerto ${PORT}`);

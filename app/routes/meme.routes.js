@@ -7,13 +7,16 @@ module.exports = app => {
     var router = require("express").Router();
 
     // create a new image
-    router.post("/create", memes.create);
+    router.post("/", memes.create);
 
     // retrieve all images
 
     router.get("/", memes.findAll);
 
     // search meme by id
+
+router.get("/")
+
 
     router.put("/:id", memes.update);
 

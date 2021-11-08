@@ -1,13 +1,14 @@
-const { meme } = require("../models");
 const db = require("../models");
-const Meme = db.Meme;
+const Meme = db.meme;
 const Op = db.Sequelize.Op;
-
 
 // Create and Save a new Meme
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.title) {
+
+console.log(req.body);
+
+    if (!req.body.Nombre) {
         res.status(400).send({
             message: "Content can not be empty!"
         });
@@ -15,9 +16,9 @@ exports.create = (req, res) => {
     }
 
     const meme = {
-        Nombre: req.body.nombre,
-        URL: req.body.url,
-        CreadoPor: req.body.user,
+        Nombre: req.body.Nombre,
+        URL: req.body.URL,
+        CreadoPor: req.body.CreadoPor,
     }
 
     // save in db
@@ -116,14 +117,10 @@ exports.delete = (req, res) => {
             message: "Ups! No pude eliminar la imagen"
         } // end else
     }) // end then
+    .catch(err => {
+        res.status(500).send({
+          message: "No se pudo eliminar la imagen id=" + id
+        });
+      });
 };
 
-// Delete all Memes from the database.
-exports.deleteAll = (req, res) => {
-
-};
-
-// Find all published Memes
-exports.findAllPublished = (req, res) => {
-
-};
