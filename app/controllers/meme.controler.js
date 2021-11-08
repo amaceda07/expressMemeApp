@@ -56,21 +56,21 @@ exports.findOne = (req, res) => {
     const id = req.params.id;
 
     Meme.findByPk(id)
-    .then(data => {
-        if (data){
-            res.send(data);
-        }
-        else{
-            res.status(404).send({
-               message: `No se encontró información con el ID = ${id}`
-            }); // end | res status 400
-        }
-    }) // end | then
-    .catch(err => {
-        res.status(500).send({
-           message: "Error, no se pudo obtener la información por ID" 
-        }); // end || res status 500
-    }); // end | catch
+        .then(data => {
+            if (data) {
+                res.send(data);
+            }
+            else {
+                res.status(404).send({
+                    message: `No se encontró información con el ID = ${id}`
+                }); // end | res status 400
+            }
+        }) // end | then
+        .catch(err => {
+            res.status(500).send({
+                message: "Error, no se pudo obtener la información por ID"
+            }); // end || res status 500
+        }); // end | catch
 };
 
 // Update a Meme by the id in the request
@@ -78,32 +78,44 @@ exports.update = (req, res) => {
     const id = req.params.id;
 
     Meme.update(req.body, {
-        where: { ImagenID: id}
+        where: { ImagenID: id }
     })// end | Meme Update
 
-    .then(num => {
-        if (num == 1){
-            res.send({
-                message: "Se ha actualizado correctamente la imagen"
+        .then(num => {
+            if (num == 1) {
+                res.send({
+                    message: "Se ha actualizado correctamente la imagen"
+                });
+            } // end | if success
+            else {
+                res.send({
+                    message: `No se actualizó la imagen con ID =${id}. Puede que no se haya encontrado o esté nulo`
+                });
+            } // end | else
+        }) // end then
+        .catch(err => {
+            res.status(500).send({
+                message: "Error actualizando la imagen con id=" + id
             });
-        } // end | if success
-        else{
-            res.send({
-                message: `No se actualizó la imagen con ID =${id}. Puede que no se haya encontrado o esté nulo`
-              });
-        } // end | else
-    }) // end then
-    .catch(err => {
-        res.status(500).send({
-          message: "Error actualizando la imagen con id=" + id
         });
-      });
 
 };
 
 // Delete a Meme with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
+
+    Meme.destroy({
+        where: {ImagenID: id}
+    })
+    .then(num => {
+        if (num == 1){
+            message: "La imagen se elimina exitosamente!"
+        } // end if
+        else{
+            message: "Ups! No pude eliminar la imagen"
+        } // end else
+    }) // end then
 };
 
 // Delete all Memes from the database.

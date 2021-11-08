@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+require("./app/routes/meme.routes")(app);
 
 const app = express();
 
