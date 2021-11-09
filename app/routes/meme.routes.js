@@ -5,23 +5,38 @@ module.exports = app => {
 
     var router = require("express").Router();
 
-/**
- * @swagger
- * /images
- * post: 
- *  description: Used to generate a new image in DB
- *  responses: 
- *      '200': 
- *          description: Successful request
- */
-    // create a new image
+    /**
+     * @swagger
+     * /images
+     * post: 
+     *  description: Used to generate a new image on DB
+     *  responses: 
+     *      '200': 
+     *          description: Successful request
+     */
     router.post("/", middleware.validate, memes.create);
 
     // retrieve all images
-
+/**
+ * @swagger
+ * /images
+ * get: 
+ * description: Used to get all images on db
+ * responses:
+ * '200':
+ *  description: Successful request
+ */
     router.get("/", middleware.validate, memes.findAll);
 
-    // search meme by id
+    /**
+     * @swagger
+     * /images?id
+     * get:
+     * description: search an image for given ID
+     * responses:
+     * '200': 
+     *  description: Succesful request
+     */
 
     router.get("/:id", middleware.validate, memes.findOne);
 
