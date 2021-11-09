@@ -1,6 +1,6 @@
 const db = require("../models");
 const Meme = db.meme;
-const Op = db.Sequelize.Op;
+const OP = db.Sequelize.Op;
 
 // Create and Save a new Meme
 exports.create = (req, res) => {

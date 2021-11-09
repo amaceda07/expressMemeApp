@@ -1,4 +1,4 @@
-const { meme } = require("../models");
+
 
 module.exports = app => {
     const memes = require("../controllers/meme.controler");

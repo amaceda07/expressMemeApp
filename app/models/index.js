@@ -22,5 +22,6 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.meme = require("./meme.model.js")(sequelize, Sequelize);
-db.user = require("./user.model")(sequelize, Sequelize);
+db.user = require("./user.model.js")(sequelize, Sequelize);
+
 module.exports = db;

@@ -7,19 +7,20 @@ module.exports = app => {
     // create a new USER
     router.post("/", users.create);
 
+    // auth user
+    router.post("/auth", users.autentica);
+
     // retrieve all USERS
 
     router.get("/", users.findAll);
-
-    // search USER by id
-
-    router.get("/:uuid", users.findOne);
 
     // update user
     router.put("/:uuid", users.update);
 
     // delete USER
     router.delete("/:uuid", users.delete);
+
+
 
 
     app.use('/api/users', router);

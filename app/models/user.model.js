@@ -1,6 +1,10 @@
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("User", {
-        UUID: { type: Sequelize.STRING, allowNull: false },
+        UUID: { 
+            type: Sequelize.UUID,
+            defaultValue: Sequelize.UUIDV4,
+            allowNull: false,
+        },
         Nick: { type: Sequelize.STRING, allowNull: false },
         Nombre: { type: Sequelize.STRING, allowNull: false },
         Password: { type: Sequelize.STRING, allowNull: false },
@@ -8,8 +12,9 @@ module.exports = (sequelize, Sequelize) => {
     }); // end User
 
 
-    User.beforeSave((User, options) => {
-        User.UUID = sequelize.Utils.generateUUID();
-    });
+
+
+
+    return User;
 
 }
