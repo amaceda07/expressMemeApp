@@ -1,45 +1,48 @@
 const db = require("../models");
-const Meme = db.meme;
+const User = db.user;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Meme
-exports.create = (req, res) => {
-    // Validate request
 
-    if (!req.body.Nombre) {
+exports.create = (req, res) => {
+    if (!require.body.User) {
         res.status(400).send({
             message: "Content can not be empty!"
         });
         return;
     }
 
-    const meme = {
+
+    var crytp = require("crypto");
+    var hash = crytp.createHash("md5").update(req.body.Password).digest('hex')
+
+    const user = {
+        Nick: req.body.Nick,
         Nombre: req.body.Nombre,
-        URL: req.body.URL,
-        CreadoPor: req.body.CreadoPor,
-    }
+        Password: hash,
+        Mail: req.body.Mail,
+    };
 
-    // save in db
 
-    Meme.create(meme)
+    User.create(user)
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Ocurrió un error cuando se intentó crear el MEME"
+                    err.message || "Ocurrió un error cuando se intentó crear el User"
             });
         });
+
 };
 
-// Retrieve all Memes from the database.
+
 exports.findAll = (req, res) => {
     const nombre = req.query.nombre;
 
     var condition = nombre ? { nombre: { [OP.like]: `%${nombre}%` } } : null;
 
-    Meme.findAll({ where: condition })
+    User.findAll({ where: condition })
         .then(data => {
             res.send(data);
         })
@@ -50,34 +53,12 @@ exports.findAll = (req, res) => {
         }); // end | catch
 };
 
-// Find a single Meme with an id
-exports.findOne = (req, res) => {
-    const id = req.params.id;
 
-    Meme.findByPk(id)
-        .then(data => {
-            if (data) {
-                res.send(data);
-            }
-            else {
-                res.status(404).send({
-                    message: `No se encontró información con el ID = ${id}`
-                }); // end | res status 400
-            }
-        }) // end | then
-        .catch(err => {
-            res.status(500).send({
-                message: "Error, no se pudo obtener la información por ID"
-            }); // end || res status 500
-        }); // end | catch
-};
-
-// Update a Meme by the id in the request
 exports.update = (req, res) => {
-    const id = req.params.id;
+    const uuid = req.params.id;
 
-    Meme.update(req.body, {
-        where: { ImagenID: id }
+    User.update(req.body, {
+        where: {UUID : uuid }
     })// end | Meme Update
 
         .then(num => {
@@ -88,31 +69,30 @@ exports.update = (req, res) => {
             } // end | if success
             else {
                 res.send({
-                    message: `No se actualizó la imagen con ID =${id}. Puede que no se haya encontrado o esté nulo`
+                    message: `No se actualizó la imagen con ID =${uuid}. Puede que no se haya encontrado o esté nulo`
                 });
             } // end | else
         }) // end then
         .catch(err => {
             res.status(500).send({
-                message: "Error actualizando la imagen con id=" + id
+                message: "Error actualizando la imagen con id=" + req.body.Nick
             });
         });
 
 };
 
-// Delete a Meme with the specified id in the request
 exports.delete = (req, res) => {
-    const id = req.params.id;
+    const uuid = req.params.id;
 
     Meme.destroy({
-        where: {ImagenID: id}
+        where: {UUID: uuid}
     })
     .then(num => {
         if (num == 1){
-            message: "La imagen se elimina exitosamente!"
+            message: "El usuario se elimina exitosamente!"
         } // end if
         else{
-            message: "Ups! No pude eliminar la imagen"
+            message: "Ups! No pude eliminar el usuario"
         } // end else
     }) // end then
     .catch(err => {

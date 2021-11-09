@@ -15,7 +15,7 @@ module.exports = app => {
 
     // search meme by id
 
-router.get("/")
+    router.get("/:id", memes.findOne);
 
 
     router.put("/:id", memes.update);
