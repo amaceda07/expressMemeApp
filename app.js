@@ -10,12 +10,11 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.urlencoded({extended : true}));
+app.use(express.urlencoded({ extended: true }));
 
 
-/* PARA JWT */
-
-/* PARA JWT */
+const swaggerUi = require('swagger-ui-express'),
+  swaggerDocument = require('./swagger.json');
 
 const db = require("./app/models");
 
@@ -28,11 +27,19 @@ const db = require("./app/models");
 
 
 app.get('/', (req, res) => {
-res.json({message: "Bienvenido al API de MemGen"});
+  res.json({ message: "Bienvenido al API de MemGen" });
 });
 
 require("./app/routes/meme.routes")(app);
 require("./app/routes/user.routes")(app);
+
+
+app.use(
+  '/api-docs',
+  swaggerUi.serve, 
+  swaggerUi.setup(swaggerDocument)
+);
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`El servidor está corriendo en el puerto ${PORT}`);
