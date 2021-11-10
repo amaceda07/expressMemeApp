@@ -148,12 +148,12 @@ exports.generateMeme = (req, res) => {
             downloadImage(objk.URL, dir)
                 .then(data => {
                     getMetadata(dir)
-                    .then( mt =>{
-                        console.log(mt);
-                        genText(mt.width, mt.height, obj.Posiciones, dir);
-                     
-                    });
-                   
+                        .then(mt => {
+                            console.log(mt);
+                            genText(mt.width, mt.height, obj.Posiciones, dir);
+
+                        });
+
 
                 })
                 .catch(
@@ -214,17 +214,19 @@ async function genText(width, height, posiciones, ruta) {
         </svg>
         `;
         console.log(svg);
-        
+
         const svgBuffer = Buffer.from(svg);
         console.log(svgBuffer);
-        const img = await sharp(ruta)
-        .composite({
-            input: svgBuffer,
-            top: 0,
-            left: 0,
-        })
-        .toFile("resultado.png");
-        ;
+        const img =
+            await sharp(ruta).composite([{
+                input: svgBuffer,
+                top: 0,
+                left: 0,
+            }])
+            .toFile("olakease.png");
+
+            console.log(img);
+
 
     } catch (error) {
         console.log(error);
