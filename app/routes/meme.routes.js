@@ -5,6 +5,9 @@ module.exports = app => {
 
     var router = require("express").Router();
 
+
+    router.post("/generateMeme/", middleware.validate, memes.generateMeme);
+
     /**
      * @swagger
      * /images
@@ -17,15 +20,15 @@ module.exports = app => {
     router.post("/", middleware.validate, memes.create);
 
     // retrieve all images
-/**
- * @swagger
- * /images
- * get: 
- * description: Used to get all images on db
- * responses:
- * '200':
- *  description: Successful request
- */
+    /**
+     * @swagger
+     * /images
+     * get: 
+     * description: Used to get all images on db
+     * responses:
+     * '200':
+     *  description: Successful request
+     */
     router.get("/", middleware.validate, memes.findAll);
 
     /**
@@ -45,6 +48,8 @@ module.exports = app => {
 
     // delete meme
     router.delete("/:id", middleware.validate, memes.delete);
+
+
 
 
     app.use('/api/memes', router)

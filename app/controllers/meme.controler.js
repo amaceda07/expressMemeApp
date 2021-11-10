@@ -1,6 +1,8 @@
+
 const db = require("../models");
 const Meme = db.meme;
 const OP = db.Sequelize.Op;
+const sharp = require("sharp");
 
 // Create and Save a new Meme
 exports.create = (req, res) => {
@@ -105,20 +107,126 @@ exports.delete = (req, res) => {
     const id = req.params.id;
 
     Meme.destroy({
-        where: {ImagenID: id}
+        where: { ImagenID: id }
     })
-    .then(num => {
-        if (num == 1){
-            message: "La imagen se elimina exitosamente!"
-        } // end if
-        else{
-            message: "Ups! No pude eliminar la imagen"
-        } // end else
-    }) // end then
-    .catch(err => {
-        res.status(500).send({
-          message: "No se pudo eliminar la imagen id=" + id
+        .then(num => {
+            if (num == 1) {
+                message: "La imagen se elimina exitosamente!"
+            } // end if
+            else {
+                message: "Ups! No pude eliminar la imagen"
+            } // end else
+        }) // end then
+        .catch(err => {
+            res.status(500).send({
+                message: "No se pudo eliminar la imagen id=" + id
+            });
         });
-      });
 };
 
+
+exports.generateMeme = (req, res) => {
+    // first we get Image Object from DB
+    console.log(req.body);
+    let obj = req.body
+
+
+    Meme.findByPk(obj.ImagenID)
+        .then(data => {
+            if (!data) {
+                res.status(500).send({
+                    message: "No se encontró la imagen en el catálogo"
+                });
+            }
+            let objk = data;
+
+            console.log(data);
+            console.log(data.URL);
+
+            let dir = `images/image${data.id}.jpg`;
+
+            downloadImage(objk.URL, dir)
+                .then(data => {
+                    getMetadata(dir)
+                    .then( mt =>{
+                        console.log(mt);
+                        genText(mt.width, mt.height, obj.Posiciones, dir);
+                     
+                    });
+                   
+
+                })
+                .catch(
+                    console.error
+                );
+
+            res.send("OK");
+        })
+        .catch(err => {
+
+        });
+
+}
+
+
+
+
+const fs = require('fs');
+const client = require('https');
+
+function downloadImage(url, filepath) {
+    return new Promise((resolve, reject) => {
+        client.get(url, (res) => {
+            if (res.statusCode === 200) {
+                res.pipe(fs.createWriteStream(filepath))
+                    .on('error', reject)
+                    .once('close', () => resolve(filepath));
+            } else {
+                // Consume response data to free up memory
+                res.resume();
+                reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+
+            }
+        });
+    });
+}
+
+
+async function getMetadata(dir) {
+    try {
+        const metadata = await sharp(dir).metadata();
+        return metadata;
+    } catch (error) {
+        console.log(`An error occurred during processing: ${error}`);
+    }
+}
+
+
+async function genText(width, height, posiciones, ruta) {
+    try {
+        const svg = `
+        <svg width="${width}" height="${height}">
+        <style>
+        .title { fill: #001; font-size: 40px; font-weight: bold;}
+        </style>
+        <text x="50%" y="25%" text-anchor="middle" class="title">${posiciones[0].Arriba}</text>
+        <text x="50%" y="75%" text-anchor="middle" class="title">${posiciones[1].Abajo}</text>
+        </svg>
+        `;
+        console.log(svg);
+        
+        const svgBuffer = Buffer.from(svg);
+        console.log(svgBuffer);
+        const img = await sharp(ruta)
+        .composite({
+            input: svgBuffer,
+            top: 0,
+            left: 0,
+        })
+        .toFile("resultado.png");
+        ;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
